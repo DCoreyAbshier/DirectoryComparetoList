@@ -58,7 +58,7 @@ namespace DrawingConsolidationProject
             Console.WriteLine("Please input location of .txt file list");
             var listPath = Console.ReadLine();
             var rougeDrawings = File.ReadAllLines(listPath);
-            var directoryPath = @"\\SomeServer\SomeDirectory";
+            var directoryPath = @"directoryhere";
             var drawingFiles = GetDrawingFiles(directoryPath);
 
             var results = rougeDrawings.ToList().Except(drawingFiles.ToList());

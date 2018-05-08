@@ -670,11 +670,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\abshier_c\\Documents\\Scripts\\C#\\DrawingConsolidationProject\\DrawingConsolidationProject.csproj",
+      "projectUniqueName": "C:\\Users\\abshier_c\\Documents\\Scripts\\C#\\Repo\\DirectoryProject\\DrawingConsolidationProject.csproj",
       "projectName": "DrawingConsolidationProject",
-      "projectPath": "C:\\Users\\abshier_c\\Documents\\Scripts\\C#\\DrawingConsolidationProject\\DrawingConsolidationProject.csproj",
+      "projectPath": "C:\\Users\\abshier_c\\Documents\\Scripts\\C#\\Repo\\DirectoryProject\\DrawingConsolidationProject.csproj",
       "packagesPath": "C:\\Users\\rogers_n\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\abshier_c\\Documents\\Scripts\\C#\\DrawingConsolidationProject\\obj\\",
+      "outputPath": "C:\\Users\\abshier_c\\Documents\\Scripts\\C#\\Repo\\DirectoryProject\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
