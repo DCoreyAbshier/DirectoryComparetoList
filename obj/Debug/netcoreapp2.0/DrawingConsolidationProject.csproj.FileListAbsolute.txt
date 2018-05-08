@@ -1,0 +1,10 @@
+C:\Users\abshier_c\Documents\Scripts\C#\DrawingConsolidationProject\bin\Debug\netcoreapp2.0\DrawingConsolidationProject.deps.json
+C:\Users\abshier_c\Documents\Scripts\C#\DrawingConsolidationProject\bin\Debug\netcoreapp2.0\DrawingConsolidationProject.runtimeconfig.json
+C:\Users\abshier_c\Documents\Scripts\C#\DrawingConsolidationProject\bin\Debug\netcoreapp2.0\DrawingConsolidationProject.runtimeconfig.dev.json
+C:\Users\abshier_c\Documents\Scripts\C#\DrawingConsolidationProject\bin\Debug\netcoreapp2.0\DrawingConsolidationProject.dll
+C:\Users\abshier_c\Documents\Scripts\C#\DrawingConsolidationProject\bin\Debug\netcoreapp2.0\DrawingConsolidationProject.pdb
+C:\Users\abshier_c\Documents\Scripts\C#\DrawingConsolidationProject\obj\Debug\netcoreapp2.0\DrawingConsolidationProject.csproj.CoreCompileInputs.cache
+C:\Users\abshier_c\Documents\Scripts\C#\DrawingConsolidationProject\obj\Debug\netcoreapp2.0\DrawingConsolidationProject.AssemblyInfoInputs.cache
+C:\Users\abshier_c\Documents\Scripts\C#\DrawingConsolidationProject\obj\Debug\netcoreapp2.0\DrawingConsolidationProject.AssemblyInfo.cs
+C:\Users\abshier_c\Documents\Scripts\C#\DrawingConsolidationProject\obj\Debug\netcoreapp2.0\DrawingConsolidationProject.dll
+C:\Users\abshier_c\Documents\Scripts\C#\DrawingConsolidationProject\obj\Debug\netcoreapp2.0\DrawingConsolidationProject.pdb
