@@ -664,7 +664,7 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\rogers_n\\.nuget\\packages\\": {},
+    "C:\\Users\\abshier_c\\.nuget\\packages\\": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
@@ -673,14 +673,14 @@
       "projectUniqueName": "C:\\Users\\abshier_c\\Documents\\Scripts\\C#\\Repo\\DirectoryProject\\DrawingConsolidationProject.csproj",
       "projectName": "DrawingConsolidationProject",
       "projectPath": "C:\\Users\\abshier_c\\Documents\\Scripts\\C#\\Repo\\DirectoryProject\\DrawingConsolidationProject.csproj",
-      "packagesPath": "C:\\Users\\rogers_n\\.nuget\\packages\\",
+      "packagesPath": "C:\\Users\\abshier_c\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\abshier_c\\Documents\\Scripts\\C#\\Repo\\DirectoryProject\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\rogers_n\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\abshier_c\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "netcoreapp2.0"

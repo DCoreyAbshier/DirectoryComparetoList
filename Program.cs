@@ -53,29 +53,35 @@ namespace DrawingConsolidationProject
 
         private static void Compare()
         {
-
             Console.Clear();
             Console.WriteLine("Please input location of .txt file list");
             var listPath = Console.ReadLine();
             var rougeDrawings = File.ReadAllLines(listPath);
-            var directoryPath = @"directoryhere";
+            var directoryPath = @"Directoryhere";
             var drawingFiles = GetDrawingFiles(directoryPath);
 
             var results = rougeDrawings.ToList().Except(drawingFiles.ToList());
+            
+            FileWriter(results);
+        }
 
-            foreach(var result in results)
+        private static void FileWriter(IEnumerable<string> results)
+        {
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"\\sscowbfs03\public\abshier\DrawingCompareResults\Results.txt"))
+
+            foreach (var result in results)
             {
-                Console.WriteLine(result);
+                file.WriteLine(result);
             }
-
         }
 
         private static IEnumerable<string> GetDrawingFiles(string directoryPath)
         {
             return Directory.GetFiles(directoryPath, "*.??f", SearchOption.AllDirectories)
                             .ToList()
-                            .Select(x => x.Split('.').First());
-        }
+                            .Select(x => x.Split('.').First())
+                            .Select(y => y.Split(@"\").Last());
+        }                   
     }
     
 }
