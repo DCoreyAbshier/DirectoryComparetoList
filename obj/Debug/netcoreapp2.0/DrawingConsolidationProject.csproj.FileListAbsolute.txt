@@ -19,3 +19,4 @@ C:\Users\abshier_c\Documents\Scripts\C#\Repo\DirectoryProject\obj\Debug\netcorea
 C:\Users\abshier_c\Documents\Scripts\C#\Repo\DirectoryProject\obj\Debug\netcoreapp2.0\DrawingConsolidationProject.dll
 C:\Users\abshier_c\Documents\Scripts\C#\Repo\DirectoryProject\obj\Debug\netcoreapp2.0\DrawingConsolidationProject.pdb
 C:\Users\abshier_c\Documents\Scripts\C#\Repo\DirectoryProject\obj\Debug\netcoreapp2.0\DrawingConsolidationProject.csprojResolveAssemblyReference.cache
+C:\Users\abshier_c\Documents\Scripts\C#\Repo\DirectoryProject\bin\Debug\netcoreapp2.0\DrawingConsolidationProject.dll.config

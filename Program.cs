@@ -2,7 +2,7 @@
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
-using System.Timers;
+using System.Text.RegularExpressions;
 
 namespace DrawingConsolidationProject
 {
@@ -59,11 +59,11 @@ namespace DrawingConsolidationProject
             Console.WriteLine("Input directory path for destination");
             var cargoDestination = Console.ReadLine();
             var pendingCargo = GetCargoFromDirectory(pathToCargo);
-            var cargoAtDestination = GetCargoFromDirectory(cargoDestination);
+            
 
-            var approvedCargo = pendingCargo.Except(cargoAtDestination);
+           
 
-                  
+
 
 
         }
@@ -107,21 +107,25 @@ namespace DrawingConsolidationProject
             var returnCargo = new List<DrawingCargo>();
             var path =  Directory.GetFiles(directoryPath, "*.??f", SearchOption.AllDirectories);
             var counter = 0;
-
+            Regex cargoIDStandard = new Regex(@"\d{3}-\d{3}-[A-E]-\d{4}");
+            
             foreach (var item in path)
             {
-                var splitValue = item.Split('.').First().Split(@"\").Last();
+                var splitValue = cargoIDStandard.Match(item).ToString();
                 var addValue = new DrawingCargo()
                 {
                     CargoID = splitValue,
                     CargoLocation = splitValue.Split('-').First(),
-                    CargoType = splitValue.Split('-').Last().Split('-').Last(),
+                    CargoType = splitValue.Split('-').Last().Split('-').First(),
                     CargoPath = item
                 };
                 returnCargo.Add(addValue);
                 counter ++;
                 Console.WriteLine("Directory read progress");
                 Console.WriteLine(counter + " of " + path.Length);
+                Console.WriteLine(addValue.CargoID);
+                Console.WriteLine(addValue.CargoLocation);
+                Console.WriteLine(addValue.CargoType);
                 System.Threading.Thread.Sleep(10);
                 Console.Clear();
             }
@@ -132,7 +136,7 @@ namespace DrawingConsolidationProject
             var returnCargo = new List<DrawingCargo>();
             var id = File.ReadAllLines(filePath);
             var counter = 0;
-            
+            Regex cargoIDStandard = new Regex(@"\d{3}-\d{3}-[A-E]-\d{4}");
 
             foreach (var item in id)
             {
@@ -140,7 +144,7 @@ namespace DrawingConsolidationProject
                 {
                     CargoID = item,
                     CargoLocation = item.Split('-').First(),
-                    CargoType = item.Split('-').Last().Split('-').Last(),
+                    CargoType = item.Split('-').Last().Split('-').First(),
                     CargoPath = "Missing"
                 };
                 returnCargo.Add(addValue);
