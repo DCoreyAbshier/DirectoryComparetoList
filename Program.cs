@@ -2,16 +2,23 @@
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
+using System.Timers;
 
 namespace DrawingConsolidationProject
 {
+    class DrawingCargo
+    {        
+        public string CargoPath {get;set;}
+        public string CargoLocation {get;set;}
+        public string CargoType {get;set;}
+        public string CargoID {get;set;}
+    }
     public enum command
     {
         compare = 0, move, exit
     }
     class Program
     {
-        
         static void Main(string[] args)
         {
             Console.Clear();
@@ -40,48 +47,112 @@ namespace DrawingConsolidationProject
             }
 
         }
-
         private static void Exit()
         {
             Environment.Exit(0);
         }
-
         private static void Move()
         {
-            throw new NotImplementedException();
-        }
+            Console.Clear();
+            Console.WriteLine("Input directory path for file that need to be moved");
+            var pathToCargo = Console.ReadLine();
+            Console.WriteLine("Input directory path for destination");
+            var cargoDestination = Console.ReadLine();
+            var pendingCargo = GetCargoFromDirectory(pathToCargo);
+            var cargoAtDestination = GetCargoFromDirectory(cargoDestination);
 
+            var approvedCargo = pendingCargo.Except(cargoAtDestination);
+
+                  
+
+
+        }
         private static void Compare()
         {
             Console.Clear();
             Console.WriteLine("Please input location of .txt file list");
             var listPath = Console.ReadLine();
-            var rougeDrawings = File.ReadAllLines(listPath);
-            var directoryPath = @"Directoryhere";
-            var drawingFiles = GetDrawingFiles(directoryPath);
-
-            var results = rougeDrawings.ToList().Except(drawingFiles.ToList());
+            Console.WriteLine("Input directory path for compare");
+            var directoryPath = Console.ReadLine();
             
-            FileWriter(results);
+            var rougeDrawings = GetCargoFromList(listPath);
+            var drawingFiles = GetCargoFromDirectory(directoryPath);
+
+            var results = rougeDrawings.Except(drawingFiles);
+                   
+            ResultsWriter(results.ToList());
         }
-
-        private static void FileWriter(IEnumerable<string> results)
+        private static void ResultsWriter(List<DrawingCargo> results)
         {
-            using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"\\sscowbfs03\public\abshier\DrawingCompareResults\Results.txt"))
-
-            foreach (var result in results)
+            Console.WriteLine("Input directory and file name to save results in");
+            var path = Console.ReadLine();
+            using(var file = File.CreateText(path))
             {
-                file.WriteLine(result);
+                foreach (var result in results)
+                {
+                    file.Write(result.CargoID.ToString());
+                    file.Write(',');
+                    file.Write(result.CargoLocation.ToString());
+                    file.Write(',');
+                    file.Write(result.CargoType.ToString());
+                    file.Write(',');
+                    file.Write(result.CargoPath.ToString());
+                    file.Write(',');
+                }
             }
         }
-
-        private static IEnumerable<string> GetDrawingFiles(string directoryPath)
+        private static List<DrawingCargo> GetCargoFromDirectory(string directoryPath)
         {
-            return Directory.GetFiles(directoryPath, "*.??f", SearchOption.AllDirectories)
-                            .ToList()
-                            .Select(x => x.Split('.').First())
-                            .Select(y => y.Split(@"\").Last());
-        }                   
+            Console.Clear();
+            var returnCargo = new List<DrawingCargo>();
+            var path =  Directory.GetFiles(directoryPath, "*.??f", SearchOption.AllDirectories);
+            var counter = 0;
+
+            foreach (var item in path)
+            {
+                var splitValue = item.Split('.').First().Split(@"\").Last();
+                var addValue = new DrawingCargo()
+                {
+                    CargoID = splitValue,
+                    CargoLocation = splitValue.Split('-').First(),
+                    CargoType = splitValue.Split('-').Last().Split('-').Last(),
+                    CargoPath = item
+                };
+                returnCargo.Add(addValue);
+                counter ++;
+                Console.WriteLine("Directory read progress");
+                Console.WriteLine(counter + " of " + path.Length);
+                System.Threading.Thread.Sleep(10);
+                Console.Clear();
+            }
+            return returnCargo;
+        }         
+        private static List<DrawingCargo> GetCargoFromList(string filePath)
+        {
+            var returnCargo = new List<DrawingCargo>();
+            var id = File.ReadAllLines(filePath);
+            var counter = 0;
+            
+
+            foreach (var item in id)
+            {
+                var addValue = new DrawingCargo()
+                {
+                    CargoID = item,
+                    CargoLocation = item.Split('-').First(),
+                    CargoType = item.Split('-').Last().Split('-').Last(),
+                    CargoPath = "Missing"
+                };
+                returnCargo.Add(addValue);
+                counter ++;
+                Console.WriteLine("File Read Progress");
+                Console.WriteLine(counter + " of " + id.Length);
+                System.Threading.Thread.Sleep(10);
+                Console.Clear();
+            }
+            return returnCargo;
+        }
+               
     }
     
 }
