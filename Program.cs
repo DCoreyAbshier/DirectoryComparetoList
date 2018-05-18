@@ -61,9 +61,9 @@ namespace DrawingConsolidationProject
             var cargoDestination = Console.ReadLine();
             var pendingCargo = GetCargoFromDirectory(pathToCargo);
             var startTime = DateTime.Now.ToString("MM-dd-yyyy hh:mm:ss tt");
-            File.AppendAllText(@"c:\temp\log.txt", "-----------------------------------------------------" + Environment.NewLine);
-            File.AppendAllText(@"c:\temp\log.txt", "Move initalized " + startTime + Environment.NewLine );
-            File.AppendAllText(@"c:\temp\log.txt", "-----------------------------------------------------" + Environment.NewLine);
+            File.AppendAllText(@"c:\temp\MoveLog.txt", "-----------------------------------------------------" + Environment.NewLine);
+            File.AppendAllText(@"c:\temp\MoveLog.txt", "Move initalized " + startTime + Environment.NewLine );
+            File.AppendAllText(@"c:\temp\MoveLog.txt", "-----------------------------------------------------" + Environment.NewLine);
 
             foreach(var crate in pendingCargo)
             {
@@ -73,19 +73,19 @@ namespace DrawingConsolidationProject
                 {
                     File.Copy(crate.CargoPath, destination, false);
                     var moveResults = crate.CargoName + " moved successfully ";
-                    File.AppendAllText(@"c:\temp\log.txt", moveResults + Environment.NewLine);                     
+                    File.AppendAllText(@"c:\temp\MoveLog.txt", moveResults + Environment.NewLine);                     
                 }
                 catch(IOException copyError)
                 {
-                    File.AppendAllText(@"c:\temp\log.txt", copyError.Message + Environment.NewLine);
+                    File.AppendAllText(@"c:\temp\MoveLog.txt", copyError.Message + Environment.NewLine);
                 }                    
             }  
 
             var endTime = DateTime.Now.ToString("MM-dd-yyyy hh:mm:ss tt");
-            File.AppendAllText(@"c:\temp\log.txt", "-----------------------------------------------------" + Environment.NewLine);
-            File.AppendAllText(@"c:\temp\log.txt", "Move Complete " + endTime + Environment.NewLine);
-            File.AppendAllText(@"c:\temp\log.txt", "-----------------------------------------------------" + Environment.NewLine);
-            File.AppendAllText(@"c:\temp\log.txt", Environment.NewLine);
+            File.AppendAllText(@"c:\temp\MoveLog.txt", "-----------------------------------------------------" + Environment.NewLine);
+            File.AppendAllText(@"c:\temp\MoveLog.txt", "Move Complete " + endTime + Environment.NewLine);
+            File.AppendAllText(@"c:\temp\MoveLog.txt", "-----------------------------------------------------" + Environment.NewLine);
+            File.AppendAllText(@"c:\temp\MoveLog.txt", Environment.NewLine);
 
         }
         private static void Compare()
@@ -137,25 +137,34 @@ namespace DrawingConsolidationProject
             {
                 var splitValue = cargoIDStandard.Match(item).ToString();
                 var splitType = typeExtractor.Match(item).ToString();
-                var addValue = new DrawingCargo()
-                {
-                    CargoID = splitValue,
-                    CargoLocation = splitValue.Split('-').First(),
-                    CargoType = splitType.Split('-').Last(),
-                    CargoPath = item,
-                    CargoName = item.Split(@"\").Last()
-                };
-                returnCargo.Add(addValue);
-                counter ++;
-                Console.WriteLine("Directory read progress");
-                Console.WriteLine(counter + " of " + path.Length);
-                Console.WriteLine(" ");
-                Console.WriteLine(addValue.CargoID);
-                Console.WriteLine(addValue.CargoLocation);
-                Console.WriteLine(addValue.CargoType);
-                Console.WriteLine(addValue.CargoName);
-                System.Threading.Thread.Sleep(10);
-                Console.Clear();
+                if(splitValue != null)
+                {                    
+                    var addValue = new DrawingCargo()
+                    {
+                        CargoID = splitValue,
+                        CargoLocation = splitValue.Split('-').First(),
+                        CargoType = splitType.Split('-').Last(),
+                        CargoPath = item,
+                        CargoName = item.Split(@"\").Last()
+                    };
+                    returnCargo.Add(addValue);
+                    counter ++;
+                    Console.WriteLine("Directory read progress");
+                    Console.WriteLine(counter + " of " + path.Length);
+                    Console.WriteLine(" ");
+                    Console.WriteLine(addValue.CargoID);
+                    Console.WriteLine(addValue.CargoLocation);
+                    Console.WriteLine(addValue.CargoType);
+                    Console.WriteLine(addValue.CargoName);
+                    System.Threading.Thread.Sleep(10);
+                    Console.Clear();
+                    }
+                    else
+                    {
+                        var errorFile = item.Split(@"\").Last();
+                        File.AppendAllText(@"c:\temp\CompareLog.txt", "Error The Following File Is Missing ID " + errorFile);
+                        counter++;
+                    } 
             }
             return returnCargo;
         }         
@@ -188,6 +197,7 @@ namespace DrawingConsolidationProject
                 Console.WriteLine(addValue.CargoType);
                 System.Threading.Thread.Sleep(30);
                 Console.Clear();
+            
             }
             return returnCargo;
         }
