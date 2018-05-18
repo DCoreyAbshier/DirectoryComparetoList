@@ -12,6 +12,7 @@ namespace DrawingConsolidationProject
         public string CargoLocation {get;set;}
         public string CargoType {get;set;}
         public string CargoID {get;set;}
+        public string CargoName {get;set;}
     }
     public enum command
     {
@@ -59,12 +60,32 @@ namespace DrawingConsolidationProject
             Console.WriteLine("Input directory path for destination");
             var cargoDestination = Console.ReadLine();
             var pendingCargo = GetCargoFromDirectory(pathToCargo);
-            
+            var startTime = DateTime.Now.ToString("MM-dd-yyyy hh:mm:ss tt");
+            File.AppendAllText(@"c:\temp\log.txt", "-----------------------------------------------------" + Environment.NewLine);
+            File.AppendAllText(@"c:\temp\log.txt", "Move initalized " + startTime + Environment.NewLine );
+            File.AppendAllText(@"c:\temp\log.txt", "-----------------------------------------------------" + Environment.NewLine);
 
-           
+            foreach(var crate in pendingCargo)
+            {
+                
+                var destination = Path.Combine(cargoDestination, crate.CargoName);
+                try
+                {
+                    File.Copy(crate.CargoPath, destination, false);
+                    var moveResults = crate.CargoName + " moved successfully ";
+                    File.AppendAllText(@"c:\temp\log.txt", moveResults + Environment.NewLine);                     
+                }
+                catch(IOException copyError)
+                {
+                    File.AppendAllText(@"c:\temp\log.txt", copyError.Message + Environment.NewLine);
+                }                    
+            }  
 
-
-
+            var endTime = DateTime.Now.ToString("MM-dd-yyyy hh:mm:ss tt");
+            File.AppendAllText(@"c:\temp\log.txt", "-----------------------------------------------------" + Environment.NewLine);
+            File.AppendAllText(@"c:\temp\log.txt", "Move Complete " + endTime + Environment.NewLine);
+            File.AppendAllText(@"c:\temp\log.txt", "-----------------------------------------------------" + Environment.NewLine);
+            File.AppendAllText(@"c:\temp\log.txt", Environment.NewLine);
 
         }
         private static void Compare()
@@ -104,28 +125,35 @@ namespace DrawingConsolidationProject
         private static List<DrawingCargo> GetCargoFromDirectory(string directoryPath)
         {
             Console.Clear();
+            Console.WriteLine("Finding Directories");
             var returnCargo = new List<DrawingCargo>();
             var path =  Directory.GetFiles(directoryPath, "*.??f", SearchOption.AllDirectories);
+            Console.Clear();
             var counter = 0;
-            Regex cargoIDStandard = new Regex(@"\d{3}-\d{3}-[A-E]-\d{4}");
+            Regex cargoIDStandard = new Regex(@"\d{2,3}-\d{2,3}-[A-E]-\d{3,4}");
+            Regex typeExtractor = new Regex(@"\d{2,3}-\d{2,3}");
             
             foreach (var item in path)
             {
                 var splitValue = cargoIDStandard.Match(item).ToString();
+                var splitType = typeExtractor.Match(item).ToString();
                 var addValue = new DrawingCargo()
                 {
                     CargoID = splitValue,
                     CargoLocation = splitValue.Split('-').First(),
-                    CargoType = splitValue.Split('-').Last().Split('-').First(),
-                    CargoPath = item
+                    CargoType = splitType.Split('-').Last(),
+                    CargoPath = item,
+                    CargoName = item.Split(@"\").Last()
                 };
                 returnCargo.Add(addValue);
                 counter ++;
                 Console.WriteLine("Directory read progress");
                 Console.WriteLine(counter + " of " + path.Length);
+                Console.WriteLine(" ");
                 Console.WriteLine(addValue.CargoID);
                 Console.WriteLine(addValue.CargoLocation);
                 Console.WriteLine(addValue.CargoType);
+                Console.WriteLine(addValue.CargoName);
                 System.Threading.Thread.Sleep(10);
                 Console.Clear();
             }
@@ -137,20 +165,27 @@ namespace DrawingConsolidationProject
             var id = File.ReadAllLines(filePath);
             var counter = 0;
             Regex cargoIDStandard = new Regex(@"\d{3}-\d{3}-[A-E]-\d{4}");
+            Regex typeExtractor = new Regex(@"\d{3}-\d{3}");
 
             foreach (var item in id)
             {
+                var splitValue = cargoIDStandard.Match(item).ToString();
+                var splitType = typeExtractor.Match(item).ToString();
                 var addValue = new DrawingCargo()
                 {
-                    CargoID = item,
-                    CargoLocation = item.Split('-').First(),
-                    CargoType = item.Split('-').Last().Split('-').First(),
+                    CargoID = splitValue,
+                    CargoLocation = splitValue.Split('-').First(),
+                    CargoType = splitType.Split('-').Last(),
                     CargoPath = "Missing"
                 };
                 returnCargo.Add(addValue);
                 counter ++;
                 Console.WriteLine("File Read Progress");
                 Console.WriteLine(counter + " of " + id.Length);
+                Console.WriteLine(" ");
+                Console.WriteLine(addValue.CargoID);
+                Console.WriteLine(addValue.CargoLocation);
+                Console.WriteLine(addValue.CargoType);
                 System.Threading.Thread.Sleep(10);
                 Console.Clear();
             }
