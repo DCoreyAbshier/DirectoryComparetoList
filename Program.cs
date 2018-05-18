@@ -164,8 +164,8 @@ namespace DrawingConsolidationProject
             var returnCargo = new List<DrawingCargo>();
             var id = File.ReadAllLines(filePath);
             var counter = 0;
-            Regex cargoIDStandard = new Regex(@"\d{3}-\d{3}-[A-E]-\d{4}");
-            Regex typeExtractor = new Regex(@"\d{3}-\d{3}");
+            Regex cargoIDStandard = new Regex(@"\d{2,3}-\d{2,3}-[A-E]-\d{3,4}");
+            Regex typeExtractor = new Regex(@"\d{2,3}-\d{2,3}");
 
             foreach (var item in id)
             {
@@ -186,7 +186,7 @@ namespace DrawingConsolidationProject
                 Console.WriteLine(addValue.CargoID);
                 Console.WriteLine(addValue.CargoLocation);
                 Console.WriteLine(addValue.CargoType);
-                System.Threading.Thread.Sleep(10);
+                System.Threading.Thread.Sleep(30);
                 Console.Clear();
             }
             return returnCargo;
