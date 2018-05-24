@@ -670,22 +670,24 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\abshier_c\\Documents\\Scripts\\C#\\Repo\\DirectoryProject\\DrawingConsolidationProject.csproj",
+      "projectUniqueName": "C:\\users\\abshier_c\\Documents\\GitRepos\\DesignProject\\DrawingConsolidationProject.csproj",
       "projectName": "DrawingConsolidationProject",
-      "projectPath": "C:\\Users\\abshier_c\\Documents\\Scripts\\C#\\Repo\\DirectoryProject\\DrawingConsolidationProject.csproj",
+      "projectPath": "C:\\users\\abshier_c\\Documents\\GitRepos\\DesignProject\\DrawingConsolidationProject.csproj",
       "packagesPath": "C:\\Users\\rogers_n\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\abshier_c\\Documents\\Scripts\\C#\\Repo\\DirectoryProject\\obj\\",
+      "outputPath": "C:\\users\\abshier_c\\Documents\\GitRepos\\DesignProject\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\rogers_n\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\rogers_n\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "netcoreapp2.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {

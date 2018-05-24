@@ -62,7 +62,7 @@ namespace DrawingConsolidationProject
             var pendingCargo = GetCargoFromDirectory(pathToCargo);
             var startTime = DateTime.Now.ToString("MM-dd-yyyy hh:mm:ss tt");
             File.AppendAllText(@"c:\temp\MoveLog.txt", "-----------------------------------------------------" + Environment.NewLine);
-            File.AppendAllText(@"c:\temp\MoveLog.txt", "Move initalized " + startTime + Environment.NewLine );
+            File.AppendAllText(@"c:\temp\MoveLog.txt", "Move initialized " + startTime + Environment.NewLine );
             File.AppendAllText(@"c:\temp\MoveLog.txt", "-----------------------------------------------------" + Environment.NewLine);
 
             foreach(var crate in pendingCargo)
@@ -118,7 +118,7 @@ namespace DrawingConsolidationProject
                     file.Write(result.CargoType.ToString());
                     file.Write(',');
                     file.Write(result.CargoPath.ToString());
-                    file.Write(',');
+                    file.Write(',' + Environment.NewLine);
                 }
             }
         }
@@ -130,14 +130,15 @@ namespace DrawingConsolidationProject
             var path =  Directory.GetFiles(directoryPath, "*.??f", SearchOption.AllDirectories);
             Console.Clear();
             var counter = 0;
-            Regex cargoIDStandard = new Regex(@"\d{2,3}-\d{2,3}-[A-E]-\d{3,4}");
+            Regex cargoIDStandard = new Regex(@"\d{1,3}-\d{1,3}-[A-E]-\d{1,4}");
+            Regex cargoIDPipline = new Regex(@"\d{3}-\d{1,3}");
             Regex typeExtractor = new Regex(@"\d{2,3}-\d{2,3}");
             
             foreach (var item in path)
             {
                 var splitValue = cargoIDStandard.Match(item).ToString();
                 var splitType = typeExtractor.Match(item).ToString();
-                if(splitValue != null)
+                if(string.IsNullOrEmpty(splitValue) == false)
                 {                    
                     var addValue = new DrawingCargo()
                     {
@@ -158,13 +159,36 @@ namespace DrawingConsolidationProject
                     Console.WriteLine(addValue.CargoName);
                     System.Threading.Thread.Sleep(10);
                     Console.Clear();
-                    }
-                    else
+                }
+                else if(string.IsNullOrEmpty(splitValue = cargoIDPipline.Match(item).ToString()) == false)
+                {
+                    splitValue = cargoIDPipline.Match(item).ToString();
+                    var addValue = new DrawingCargo()
                     {
-                        var errorFile = item.Split(@"\").Last();
-                        File.AppendAllText(@"c:\temp\CompareLog.txt", "Error The Following File Is Missing ID " + errorFile);
-                        counter++;
-                    } 
+                        CargoID = splitValue,
+                        CargoLocation = splitValue.Split('-').First(),
+                        CargoType = "PipeLine",
+                        CargoPath = item,
+                        CargoName = item.Split(@"\").Last()
+                    };
+                    returnCargo.Add(addValue);
+                    counter ++;
+                    Console.WriteLine("Directory read progress");
+                    Console.WriteLine(counter + " of " + path.Length);
+                    Console.WriteLine(" ");
+                    Console.WriteLine(addValue.CargoID);
+                    Console.WriteLine(addValue.CargoLocation);
+                    Console.WriteLine(addValue.CargoType);
+                    Console.WriteLine(addValue.CargoName);
+                    System.Threading.Thread.Sleep(10);
+                    Console.Clear();
+                }
+                else
+                {
+                    var errorFile = item.Split(@"\").Last();
+                    File.AppendAllText(@"c:\temp\CompareLog.txt", "The Following File Is Missing ID Due to Improper Nameing " + errorFile + Environment.NewLine);
+                    counter++;
+                } 
             }
             return returnCargo;
         }         
@@ -173,30 +197,61 @@ namespace DrawingConsolidationProject
             var returnCargo = new List<DrawingCargo>();
             var id = File.ReadAllLines(filePath);
             var counter = 0;
-            Regex cargoIDStandard = new Regex(@"\d{2,3}-\d{2,3}-[A-E]-\d{3,4}");
+            Regex cargoIDStandard = new Regex(@"\d{1,3}-\d{1,3}-[A-E]-\d{1,4}");
+            Regex cargoIDPipline = new Regex(@"\d{3}-\d{1,3}");
             Regex typeExtractor = new Regex(@"\d{2,3}-\d{2,3}");
 
             foreach (var item in id)
             {
                 var splitValue = cargoIDStandard.Match(item).ToString();
                 var splitType = typeExtractor.Match(item).ToString();
-                var addValue = new DrawingCargo()
+                if(string.IsNullOrEmpty(splitValue) == false)
+                {  
+                    var addValue = new DrawingCargo()
+                    {
+                        CargoID = splitValue,
+                        CargoLocation = splitValue.Split('-').First(),
+                        CargoType = splitType.Split('-').Last(),
+                        CargoPath = "Missing"
+                    };
+                    returnCargo.Add(addValue);
+                    counter ++;
+                    Console.WriteLine("File Read Progress");
+                    Console.WriteLine(counter + " of " + id.Length);
+                    Console.WriteLine(" ");
+                    Console.WriteLine(addValue.CargoID);
+                    Console.WriteLine(addValue.CargoLocation);
+                    Console.WriteLine(addValue.CargoType);
+                    System.Threading.Thread.Sleep(30);
+                    Console.Clear();
+                }
+                else if(string.IsNullOrEmpty(splitValue = cargoIDPipline.Match(item).ToString()) == false)
                 {
-                    CargoID = splitValue,
-                    CargoLocation = splitValue.Split('-').First(),
-                    CargoType = splitType.Split('-').Last(),
-                    CargoPath = "Missing"
-                };
-                returnCargo.Add(addValue);
-                counter ++;
-                Console.WriteLine("File Read Progress");
-                Console.WriteLine(counter + " of " + id.Length);
-                Console.WriteLine(" ");
-                Console.WriteLine(addValue.CargoID);
-                Console.WriteLine(addValue.CargoLocation);
-                Console.WriteLine(addValue.CargoType);
-                System.Threading.Thread.Sleep(30);
-                Console.Clear();
+                    splitValue = cargoIDPipline.Match(item).ToString();
+                    var addValue = new DrawingCargo()
+                    {
+                        CargoID = splitValue,
+                        CargoLocation = splitValue.Split('-').First(),
+                        CargoType = "PipeLine",
+                        CargoPath = "Missing"
+                    };
+                    returnCargo.Add(addValue);
+                    counter ++;
+                    Console.WriteLine("Directory read progress");
+                    Console.WriteLine(counter + " of " + id.Length);
+                    Console.WriteLine(" ");
+                    Console.WriteLine(addValue.CargoID);
+                    Console.WriteLine(addValue.CargoLocation);
+                    Console.WriteLine(addValue.CargoType);
+                    System.Threading.Thread.Sleep(10);
+                    Console.Clear();
+                }
+                else
+                {
+                    var errorFile = item;
+                    File.AppendAllText(@"c:\temp\CompareLog.txt", "The Following File Is Missing ID Due to Improper Nameing " + errorFile + Environment.NewLine);
+                    counter++;
+                } 
             
             }
             return returnCargo;
