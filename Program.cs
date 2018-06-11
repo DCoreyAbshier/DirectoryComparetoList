@@ -6,13 +6,13 @@ using System.Text.RegularExpressions;
 
 namespace DrawingConsolidationProject
 {
-    class DrawingCargo
+    class Drawing
     {        
-        public string CargoPath {get;set;}
-        public string CargoLocation {get;set;}
-        public string CargoType {get;set;}
-        public string CargoID {get;set;}
-        public string CargoName {get;set;}
+        public string drawingPath {get;set;}
+        public string drawingLocation {get;set;}
+        public string drawingType {get;set;}
+        public string drawingID {get;set;}
+        public string drawingName {get;set;}
     }
     public enum command
     {
@@ -56,23 +56,23 @@ namespace DrawingConsolidationProject
         {
             Console.Clear();
             Console.WriteLine("Input directory path for file that need to be moved");
-            var pathToCargo = Console.ReadLine();
+            var pathToScannedDrawing = Console.ReadLine();
             Console.WriteLine("Input directory path for destination");
-            var cargoDestination = Console.ReadLine();
-            var pendingCargo = GetCargoFromDirectory(pathToCargo);
+            var scannedDrawingDestination = Console.ReadLine();
+            var pendingScannedDrawings = GetScannedDrawingsFromDirectory (pathToScannedDrawing);
             var startTime = DateTime.Now.ToString("MM-dd-yyyy hh:mm:ss tt");
             File.AppendAllText(@"c:\temp\MoveLog.txt", "-----------------------------------------------------" + Environment.NewLine);
             File.AppendAllText(@"c:\temp\MoveLog.txt", "Move initialized " + startTime + Environment.NewLine );
             File.AppendAllText(@"c:\temp\MoveLog.txt", "-----------------------------------------------------" + Environment.NewLine);
 
-            foreach(var crate in pendingCargo)
+            foreach(var drawing in pendingScannedDrawings)
             {
                 
-                var destination = Path.Combine(cargoDestination, crate.CargoName);
+                var destination = Path.Combine(scannedDrawingDestination, drawing.drawingName);
                 try
                 {
-                    File.Copy(crate.CargoPath, destination, false);
-                    var moveResults = crate.CargoName + " moved successfully ";
+                    File.Copy (drawing.drawingPath, destination, false);
+                    var moveResults = drawing.drawingName + " moved successfully ";
                     File.AppendAllText(@"c:\temp\MoveLog.txt", moveResults + Environment.NewLine);                     
                 }
                 catch(IOException copyError)
@@ -96,14 +96,14 @@ namespace DrawingConsolidationProject
             Console.WriteLine("Input directory path for compare");
             var directoryPath = Console.ReadLine();
             
-            var rougeDrawings = GetCargoFromList(listPath);
-            var drawingFiles = GetCargoFromDirectory(directoryPath);
+            var hardCopyDrawings = GetDrawingFromList(listPath);
+            var drawingsInRendition = GetScannedDrawingsFromDirectory(directoryPath);
 
-            var results = rougeDrawings.Except(drawingFiles);
+            var results = hardCopyDrawings.Except(drawingsInRendition);
                    
             ResultsWriter(results.ToList());
         }
-        private static void ResultsWriter(List<DrawingCargo> results)
+        private static void ResultsWriter(List<Drawing> results)
         {
             Console.WriteLine("Input directory and file name to save results in");
             var path = Console.ReadLine();
@@ -111,75 +111,75 @@ namespace DrawingConsolidationProject
             {
                 foreach (var result in results)
                 {
-                    file.Write(result.CargoID.ToString());
+                    file.Write(result.drawingID.ToString());
                     file.Write(',');
-                    file.Write(result.CargoLocation.ToString());
+                    file.Write(result.drawingLocation.ToString());
                     file.Write(',');
-                    file.Write(result.CargoType.ToString());
+                    file.Write(result.drawingType.ToString());
                     file.Write(',');
-                    file.Write(result.CargoPath.ToString());
+                    file.Write(result.drawingPath.ToString());
                     file.Write(',' + Environment.NewLine);
                 }
             }
         }
-        private static List<DrawingCargo> GetCargoFromDirectory(string directoryPath)
+        private static List<Drawing> GetScannedDrawingsFromDirectory(string directoryPath)
         {
             Console.Clear();
             Console.WriteLine("Finding Directories");
-            var returnCargo = new List<DrawingCargo>();
+            var returnDrawing = new List<Drawing>();
             var path =  Directory.GetFiles(directoryPath, "*.??f", SearchOption.AllDirectories);
             Console.Clear();
             var counter = 0;
-            Regex cargoIDStandard = new Regex(@"\d{1,3}-\d{1,3}-[A-E]-\d{1,4}");
-            Regex cargoIDPipline = new Regex(@"\d{3}-\d{1,3}");
-            Regex typeExtractor = new Regex(@"\d{2,3}-\d{2,3}");
+            Regex drawingIDStandard = new Regex(@"\d{1,3}-\d{1,3}-[A-E]-\d{1,4}");
+            Regex drawingIDPipline = new Regex(@"\d{3}-\d{1,3}");
+            Regex typeExtractor = new Regex(@"\d{1,3}-\d{1,3}");
             
             foreach (var item in path)
             {
-                var splitValue = cargoIDStandard.Match(item).ToString();
+                var splitValue = drawingIDStandard.Match(item).ToString();
                 var splitType = typeExtractor.Match(item).ToString();
                 if(string.IsNullOrEmpty(splitValue) == false)
                 {                    
-                    var addValue = new DrawingCargo()
+                    var addValue = new Drawing()
                     {
-                        CargoID = splitValue,
-                        CargoLocation = splitValue.Split('-').First(),
-                        CargoType = splitType.Split('-').Last(),
-                        CargoPath = item,
-                        CargoName = item.Split(@"\").Last()
+                        drawingID = splitValue,
+                        drawingLocation = splitValue.Split('-').First(),
+                        drawingType = splitType.Split('-').Last(),
+                        drawingPath = item,
+                        drawingName = item.Split(@"\").Last()
                     };
-                    returnCargo.Add(addValue);
+                    returnDrawing.Add(addValue);
                     counter ++;
                     Console.WriteLine("Directory read progress");
                     Console.WriteLine(counter + " of " + path.Length);
                     Console.WriteLine(" ");
-                    Console.WriteLine(addValue.CargoID);
-                    Console.WriteLine(addValue.CargoLocation);
-                    Console.WriteLine(addValue.CargoType);
-                    Console.WriteLine(addValue.CargoName);
+                    Console.WriteLine(addValue.drawingID);
+                    Console.WriteLine(addValue.drawingLocation);
+                    Console.WriteLine(addValue.drawingType);
+                    Console.WriteLine(addValue.drawingName);
                     System.Threading.Thread.Sleep(10);
                     Console.Clear();
                 }
-                else if(string.IsNullOrEmpty(splitValue = cargoIDPipline.Match(item).ToString()) == false)
+                else if(string.IsNullOrEmpty(splitValue = drawingIDPipline.Match(item).ToString()) == false)
                 {
-                    splitValue = cargoIDPipline.Match(item).ToString();
-                    var addValue = new DrawingCargo()
+                    splitValue = drawingIDPipline.Match(item).ToString();
+                    var addValue = new Drawing()
                     {
-                        CargoID = splitValue,
-                        CargoLocation = splitValue.Split('-').First(),
-                        CargoType = "PipeLine",
-                        CargoPath = item,
-                        CargoName = item.Split(@"\").Last()
+                        drawingID = splitValue,
+                        drawingLocation = splitValue.Split('-').First(),
+                        drawingType = "PipeLine",
+                        drawingPath = item,
+                        drawingName = item.Split(@"\").Last()
                     };
-                    returnCargo.Add(addValue);
+                    returnDrawing.Add(addValue);
                     counter ++;
                     Console.WriteLine("Directory read progress");
                     Console.WriteLine(counter + " of " + path.Length);
                     Console.WriteLine(" ");
-                    Console.WriteLine(addValue.CargoID);
-                    Console.WriteLine(addValue.CargoLocation);
-                    Console.WriteLine(addValue.CargoType);
-                    Console.WriteLine(addValue.CargoName);
+                    Console.WriteLine(addValue.drawingID);
+                    Console.WriteLine(addValue.drawingLocation);
+                    Console.WriteLine(addValue.drawingType);
+                    Console.WriteLine(addValue.drawingName);
                     System.Threading.Thread.Sleep(10);
                     Console.Clear();
                 }
@@ -190,59 +190,59 @@ namespace DrawingConsolidationProject
                     counter++;
                 } 
             }
-            return returnCargo;
+            return returnDrawing;
         }         
-        private static List<DrawingCargo> GetCargoFromList(string filePath)
+        private static List<Drawing>GetDrawingFromList(string filePath)
         {
-            var returnCargo = new List<DrawingCargo>();
+            var returnDrawing = new List<Drawing>();
             var id = File.ReadAllLines(filePath);
             var counter = 0;
-            Regex cargoIDStandard = new Regex(@"\d{1,3}-\d{1,3}-[A-E]-\d{1,4}");
-            Regex cargoIDPipline = new Regex(@"\d{3}-\d{1,3}");
+            Regex drawingIDStandard = new Regex(@"\d{1,3}-\d{1,3}-[A-E]-\d{1,4}");
+            Regex drawingIDPipline = new Regex(@"\d{3}-\d{1,3}");
             Regex typeExtractor = new Regex(@"\d{2,3}-\d{2,3}");
 
             foreach (var item in id)
             {
-                var splitValue = cargoIDStandard.Match(item).ToString();
+                var splitValue = drawingIDStandard.Match(item).ToString();
                 var splitType = typeExtractor.Match(item).ToString();
                 if(string.IsNullOrEmpty(splitValue) == false)
                 {  
-                    var addValue = new DrawingCargo()
+                    var addValue = new Drawing()
                     {
-                        CargoID = splitValue,
-                        CargoLocation = splitValue.Split('-').First(),
-                        CargoType = splitType.Split('-').Last(),
-                        CargoPath = "Missing"
+                        drawingID = splitValue,
+                        drawingLocation = splitValue.Split('-').First(),
+                        drawingType = splitType.Split('-').Last(),
+                        drawingPath = "Missing"
                     };
-                    returnCargo.Add(addValue);
+                    returnDrawing.Add(addValue);
                     counter ++;
                     Console.WriteLine("File Read Progress");
                     Console.WriteLine(counter + " of " + id.Length);
                     Console.WriteLine(" ");
-                    Console.WriteLine(addValue.CargoID);
-                    Console.WriteLine(addValue.CargoLocation);
-                    Console.WriteLine(addValue.CargoType);
+                    Console.WriteLine(addValue.drawingID);
+                    Console.WriteLine(addValue.drawingLocation);
+                    Console.WriteLine(addValue.drawingType);
                     System.Threading.Thread.Sleep(30);
                     Console.Clear();
                 }
-                else if(string.IsNullOrEmpty(splitValue = cargoIDPipline.Match(item).ToString()) == false)
+                else if(string.IsNullOrEmpty(splitValue = drawingIDPipline.Match(item).ToString()) == false)
                 {
-                    splitValue = cargoIDPipline.Match(item).ToString();
-                    var addValue = new DrawingCargo()
+                    splitValue = drawingIDPipline.Match(item).ToString();
+                    var addValue = new Drawing()
                     {
-                        CargoID = splitValue,
-                        CargoLocation = splitValue.Split('-').First(),
-                        CargoType = "PipeLine",
-                        CargoPath = "Missing"
+                        drawingID = splitValue,
+                        drawingLocation = splitValue.Split('-').First(),
+                        drawingType = "PipeLine",
+                        drawingPath = "Missing"
                     };
-                    returnCargo.Add(addValue);
+                    returnDrawing.Add(addValue);
                     counter ++;
                     Console.WriteLine("Directory read progress");
                     Console.WriteLine(counter + " of " + id.Length);
                     Console.WriteLine(" ");
-                    Console.WriteLine(addValue.CargoID);
-                    Console.WriteLine(addValue.CargoLocation);
-                    Console.WriteLine(addValue.CargoType);
+                    Console.WriteLine(addValue.drawingID);
+                    Console.WriteLine(addValue.drawingLocation);
+                    Console.WriteLine(addValue.drawingType);
                     System.Threading.Thread.Sleep(10);
                     Console.Clear();
                 }
@@ -254,9 +254,34 @@ namespace DrawingConsolidationProject
                 } 
             
             }
-            return returnCargo;
+            return returnDrawing;
         }
-               
+        private string Throwaway()
+        {
+            var dictionary = new Dictionary<throwaway, string>();
+
+            dictionary.Add(new throwaway("tyr", "grt"),@"c:\users\abshier_c\temp");
+
+            var type = "grt";
+            var location = "tyr";
+
+            var founditem = dictionary.FirstOrDefault(x => x.Key.type == type && x.Key.location == location);
+
+            return founditem.Value;
+        }
+
+         public class throwaway
+         {
+             public throwaway(string location, string type)
+             {
+                 this.location = location;
+                 this.type =type;
+             }
+             public string location{get; set;}
+             public string type{get; set;}
+
+         }      
     }
     
 }
+
