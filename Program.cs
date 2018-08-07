@@ -200,7 +200,7 @@ namespace DrawingConsolidationProject
             var returnDrawing = new List<Drawing>();
             var id = File.ReadAllLines(filePath);
             var counter = 0;
-            Regex drawingIDStandard = new Regex(@"\d{1,3}-\d{1,3}-[A-E]-\d{1,4}");
+            Regex drawingIDStandard = new Regex(@"\d{1,3}-\d{1,3}-[A-Ea-e]-\d{1,4}");
             Regex drawingIDPipline = new Regex(@"\d{3}-\d{1,3}");
             Regex typeExtractor = new Regex(@"\d{2,3}-\d{2,3}");
 
@@ -263,7 +263,10 @@ namespace DrawingConsolidationProject
         {
             var destinations = new Dictionary<throwaway, string>();
 
-            destinations.Add(new throwaway("005", "444"), @"C:\Users\abshier_c\Documents\TestDest\1\");
+            destinations.Add(new throwaway("005", "441"), @"C:\Users\abshier_c\Documents\TestDest\005\441\");
+            destinations.Add(new throwaway("005", "444"), @"C:\Users\abshier_c\Documents\TestDest\005\444\");
+            destinations.Add(new throwaway("006", "441"), @"C:\Users\abshier_c\Documents\TestDest\006\441");
+            destinations.Add(new throwaway("006", "444"), @"C:\Users\abshier_c\Documents\TestDest\006\444\");
 
             var type = drawingId.drawingType;
             var location = drawingId.drawingLocation;
