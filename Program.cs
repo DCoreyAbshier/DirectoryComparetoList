@@ -57,8 +57,8 @@ namespace DrawingConsolidationProject
             Console.Clear();
             Console.WriteLine("Input directory path for file that need to be moved");
             var pathToScannedDrawing = Console.ReadLine();
-            Console.WriteLine("Input directory path for destination");
-            var scannedDrawingDestination = Console.ReadLine();
+            //Console.WriteLine("Input directory path for destination");
+            //var scannedDrawingDestination = Console.ReadLine();
             var pendingScannedDrawings = GetScannedDrawingsFromDirectory (pathToScannedDrawing);
             var startTime = DateTime.Now.ToString("MM-dd-yyyy hh:mm:ss tt");
             File.AppendAllText(@"c:\temp\MoveLog.txt", "-----------------------------------------------------" + Environment.NewLine);
@@ -68,7 +68,9 @@ namespace DrawingConsolidationProject
             foreach(var drawing in pendingScannedDrawings)
             {
                 
-                var destination = Path.Combine(scannedDrawingDestination, drawing.drawingName);
+                //var destination = Path.Combine(scannedDrawingDestination, drawing.drawingName);
+                var directory = GetDestination(drawing);
+                var destination = Path.Combine(directory, drawing.drawingName);
                 try
                 {
                     File.Copy (drawing.drawingPath, destination, false);
@@ -88,7 +90,8 @@ namespace DrawingConsolidationProject
             File.AppendAllText(@"c:\temp\MoveLog.txt", Environment.NewLine);
 
         }
-        private static void Compare()
+
+       private static void Compare()
         {
             Console.Clear();
             Console.WriteLine("Please input location of .txt file list");
@@ -130,7 +133,7 @@ namespace DrawingConsolidationProject
             var path =  Directory.GetFiles(directoryPath, "*.??f", SearchOption.AllDirectories);
             Console.Clear();
             var counter = 0;
-            Regex drawingIDStandard = new Regex(@"\d{1,3}-\d{1,3}-[A-E]-\d{1,4}");
+            Regex drawingIDStandard = new Regex(@"\d{1,3}-\d{1,3}-[A-Ea-e]-\d{1,4}");
             Regex drawingIDPipline = new Regex(@"\d{3}-\d{1,3}");
             Regex typeExtractor = new Regex(@"\d{1,3}-\d{1,3}");
             
@@ -256,16 +259,16 @@ namespace DrawingConsolidationProject
             }
             return returnDrawing;
         }
-        private string Throwaway()
+        public static string GetDestination(Drawing drawingId)
         {
-            var dictionary = new Dictionary<throwaway, string>();
+            var destinations = new Dictionary<throwaway, string>();
 
-            dictionary.Add(new throwaway("tyr", "grt"),@"c:\users\abshier_c\temp");
+            destinations.Add(new throwaway("005", "444"), @"C:\Users\abshier_c\Documents\TestDest\1\");
 
-            var type = "grt";
-            var location = "tyr";
+            var type = drawingId.drawingType;
+            var location = drawingId.drawingLocation;
 
-            var founditem = dictionary.FirstOrDefault(x => x.Key.type == type && x.Key.location == location);
+            var founditem = destinations.FirstOrDefault(x => x.Key.type == type && x.Key.location == location);
 
             return founditem.Value;
         }
@@ -280,7 +283,8 @@ namespace DrawingConsolidationProject
              public string location{get; set;}
              public string type{get; set;}
 
-         }      
+         }
+        
     }
     
 }
