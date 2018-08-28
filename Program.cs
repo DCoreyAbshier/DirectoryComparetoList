@@ -6,14 +6,6 @@ using System.Text.RegularExpressions;
 
 namespace DrawingConsolidationProject
 {
-    class Drawing
-    {        
-        public string drawingPath {get;set;}
-        public string drawingLocation {get;set;}
-        public string drawingType {get;set;}
-        public string drawingID {get;set;}
-        public string drawingName {get;set;}
-    }
     public enum command
     {
         compare = 0, move, exit
@@ -52,46 +44,68 @@ namespace DrawingConsolidationProject
         {
             Environment.Exit(0);
         }
+
         private static void Move()
         {
             Console.Clear();
             Console.WriteLine("Input directory path for file that need to be moved");
             var pathToScannedDrawing = Console.ReadLine();
-            //Console.WriteLine("Input directory path for destination");
-            //var scannedDrawingDestination = Console.ReadLine();
-            var pendingScannedDrawings = GetScannedDrawingsFromDirectory (pathToScannedDrawing);
+            var pendingScannedDrawings = GetDrawingList.FromDirectory(pathToScannedDrawing);
             var startTime = DateTime.Now.ToString("MM-dd-yyyy hh:mm:ss tt");
-            File.AppendAllText(@"c:\temp\MoveLog.txt", "-----------------------------------------------------" + Environment.NewLine);
-            File.AppendAllText(@"c:\temp\MoveLog.txt", "Move initialized " + startTime + Environment.NewLine );
-            File.AppendAllText(@"c:\temp\MoveLog.txt", "-----------------------------------------------------" + Environment.NewLine);
+            MoveFileLogger.StartLog(startTime);
 
             foreach(var drawing in pendingScannedDrawings)
             {
-                
-                //var destination = Path.Combine(scannedDrawingDestination, drawing.drawingName);
-                var directory = GetDestination(drawing);
-                var destination = Path.Combine(directory, drawing.drawingName);
-                try
+                var exceptiondestination = Path.Combine(@"C:\Users\abshier_c\Documents\TestDest\Exception\" + drawing.drawingName);
+                var directory = " ";
+
+                if (drawing.drawingLocation=="005")
                 {
-                    File.Copy (drawing.drawingPath, destination, false);
-                    var moveResults = drawing.drawingName + " moved successfully ";
-                    File.AppendAllText(@"c:\temp\MoveLog.txt", moveResults + Environment.NewLine);                     
+                    directory = GeneralFacilityDictionary.GetDestination(drawing);
                 }
-                catch(IOException copyError)
+                else
                 {
-                    File.AppendAllText(@"c:\temp\MoveLog.txt", copyError.Message + Environment.NewLine);
-                }                    
+                    directory = Dictionary.GetDestination(drawing);
+                }
+
+                if (directory == null)
+                {
+                    var errorFile = drawing.drawingName;
+                    File.AppendAllText(@"C:\Users\abshier_c\Documents\TestDest\Exception\MoveLog.txt", "The Following File Is Has no Destination: " + errorFile + Environment.NewLine);
+                    File.Copy(drawing.drawingPath, exceptiondestination, false);
+                }
+                else
+                {
+                    CopyFiles(drawing, directory, exceptiondestination);
+                }
+                                    
             }  
 
             var endTime = DateTime.Now.ToString("MM-dd-yyyy hh:mm:ss tt");
-            File.AppendAllText(@"c:\temp\MoveLog.txt", "-----------------------------------------------------" + Environment.NewLine);
-            File.AppendAllText(@"c:\temp\MoveLog.txt", "Move Complete " + endTime + Environment.NewLine);
-            File.AppendAllText(@"c:\temp\MoveLog.txt", "-----------------------------------------------------" + Environment.NewLine);
-            File.AppendAllText(@"c:\temp\MoveLog.txt", Environment.NewLine);
-
+            MoveFileLogger.EndLog(endTime);
         }
 
-       private static void Compare()
+        private static void CopyFiles(Drawing drawing, string directory, string exceptiondestination)
+        {
+            
+            var destination = Path.Combine(directory, drawing.drawingName);
+
+            try
+            {
+                File.Copy(drawing.drawingPath, destination, false);
+                var moveResults = drawing.drawingName + " moved successfully ";
+                File.AppendAllText(@"C:\Users\abshier_c\Documents\TestDest\Exception\MoveLog.txt",
+                    moveResults + Environment.NewLine);
+            }
+            catch (IOException copyError)
+            {
+                File.AppendAllText(@"C:\Users\abshier_c\Documents\TestDest\Exception\MoveLog.txt",
+                    copyError.Message + Environment.NewLine);
+                File.Copy(drawing.drawingPath, exceptiondestination, false);
+            }
+        }
+
+        private static void Compare()
         {
             Console.Clear();
             Console.WriteLine("Please input location of .txt file list");
@@ -99,196 +113,13 @@ namespace DrawingConsolidationProject
             Console.WriteLine("Input directory path for compare");
             var directoryPath = Console.ReadLine();
             
-            var hardCopyDrawings = GetDrawingFromList(listPath);
-            var drawingsInRendition = GetScannedDrawingsFromDirectory(directoryPath);
+            var hardCopyDrawings = GetDrawingList.FromList(listPath);
+            var drawingsInRendition = GetDrawingList.FromDirectory(directoryPath);
 
             var results = hardCopyDrawings.Except(drawingsInRendition);
-                   
-            ResultsWriter(results.ToList());
+
+            Output.ResultsWriter(results.ToList());
         }
-        private static void ResultsWriter(List<Drawing> results)
-        {
-            Console.WriteLine("Input directory and file name to save results in");
-            var path = Console.ReadLine();
-            using(var file = File.CreateText(path))
-            {
-                foreach (var result in results)
-                {
-                    file.Write(result.drawingID.ToString());
-                    file.Write(',');
-                    file.Write(result.drawingLocation.ToString());
-                    file.Write(',');
-                    file.Write(result.drawingType.ToString());
-                    file.Write(',');
-                    file.Write(result.drawingPath.ToString());
-                    file.Write(',' + Environment.NewLine);
-                }
-            }
-        }
-        private static List<Drawing> GetScannedDrawingsFromDirectory(string directoryPath)
-        {
-            Console.Clear();
-            Console.WriteLine("Finding Directories");
-            var returnDrawing = new List<Drawing>();
-            var path =  Directory.GetFiles(directoryPath, "*.??f", SearchOption.AllDirectories);
-            Console.Clear();
-            var counter = 0;
-            Regex drawingIDStandard = new Regex(@"\d{1,3}-\d{1,3}-[A-Ea-e]-\d{1,4}");
-            Regex drawingIDPipline = new Regex(@"\d{3}-\d{1,3}");
-            Regex typeExtractor = new Regex(@"\d{1,3}-\d{1,3}");
-            
-            foreach (var item in path)
-            {
-                var splitValue = drawingIDStandard.Match(item).ToString();
-                var splitType = typeExtractor.Match(item).ToString();
-                if(string.IsNullOrEmpty(splitValue) == false)
-                {                    
-                    var addValue = new Drawing()
-                    {
-                        drawingID = splitValue,
-                        drawingLocation = splitValue.Split('-').First(),
-                        drawingType = splitType.Split('-').Last(),
-                        drawingPath = item,
-                        drawingName = item.Split(@"\").Last()
-                    };
-                    returnDrawing.Add(addValue);
-                    counter ++;
-                    Console.WriteLine("Directory read progress");
-                    Console.WriteLine(counter + " of " + path.Length);
-                    Console.WriteLine(" ");
-                    Console.WriteLine(addValue.drawingID);
-                    Console.WriteLine(addValue.drawingLocation);
-                    Console.WriteLine(addValue.drawingType);
-                    Console.WriteLine(addValue.drawingName);
-                    System.Threading.Thread.Sleep(10);
-                    Console.Clear();
-                }
-                else if(string.IsNullOrEmpty(splitValue = drawingIDPipline.Match(item).ToString()) == false)
-                {
-                    splitValue = drawingIDPipline.Match(item).ToString();
-                    var addValue = new Drawing()
-                    {
-                        drawingID = splitValue,
-                        drawingLocation = splitValue.Split('-').First(),
-                        drawingType = "PipeLine",
-                        drawingPath = item,
-                        drawingName = item.Split(@"\").Last()
-                    };
-                    returnDrawing.Add(addValue);
-                    counter ++;
-                    Console.WriteLine("Directory read progress");
-                    Console.WriteLine(counter + " of " + path.Length);
-                    Console.WriteLine(" ");
-                    Console.WriteLine(addValue.drawingID);
-                    Console.WriteLine(addValue.drawingLocation);
-                    Console.WriteLine(addValue.drawingType);
-                    Console.WriteLine(addValue.drawingName);
-                    System.Threading.Thread.Sleep(10);
-                    Console.Clear();
-                }
-                else
-                {
-                    var errorFile = item.Split(@"\").Last();
-                    File.AppendAllText(@"c:\temp\CompareLog.txt", "The Following File Is Missing ID Due to Improper Nameing " + errorFile + Environment.NewLine);
-                    counter++;
-                } 
-            }
-            return returnDrawing;
-        }         
-        private static List<Drawing>GetDrawingFromList(string filePath)
-        {
-            var returnDrawing = new List<Drawing>();
-            var id = File.ReadAllLines(filePath);
-            var counter = 0;
-            Regex drawingIDStandard = new Regex(@"\d{1,3}-\d{1,3}-[A-Ea-e]-\d{1,4}");
-            Regex drawingIDPipline = new Regex(@"\d{3}-\d{1,3}");
-            Regex typeExtractor = new Regex(@"\d{2,3}-\d{2,3}");
-
-            foreach (var item in id)
-            {
-                var splitValue = drawingIDStandard.Match(item).ToString();
-                var splitType = typeExtractor.Match(item).ToString();
-                if(string.IsNullOrEmpty(splitValue) == false)
-                {  
-                    var addValue = new Drawing()
-                    {
-                        drawingID = splitValue,
-                        drawingLocation = splitValue.Split('-').First(),
-                        drawingType = splitType.Split('-').Last(),
-                        drawingPath = "Missing"
-                    };
-                    returnDrawing.Add(addValue);
-                    counter ++;
-                    Console.WriteLine("File Read Progress");
-                    Console.WriteLine(counter + " of " + id.Length);
-                    Console.WriteLine(" ");
-                    Console.WriteLine(addValue.drawingID);
-                    Console.WriteLine(addValue.drawingLocation);
-                    Console.WriteLine(addValue.drawingType);
-                    System.Threading.Thread.Sleep(30);
-                    Console.Clear();
-                }
-                else if(string.IsNullOrEmpty(splitValue = drawingIDPipline.Match(item).ToString()) == false)
-                {
-                    splitValue = drawingIDPipline.Match(item).ToString();
-                    var addValue = new Drawing()
-                    {
-                        drawingID = splitValue,
-                        drawingLocation = splitValue.Split('-').First(),
-                        drawingType = "PipeLine",
-                        drawingPath = "Missing"
-                    };
-                    returnDrawing.Add(addValue);
-                    counter ++;
-                    Console.WriteLine("Directory read progress");
-                    Console.WriteLine(counter + " of " + id.Length);
-                    Console.WriteLine(" ");
-                    Console.WriteLine(addValue.drawingID);
-                    Console.WriteLine(addValue.drawingLocation);
-                    Console.WriteLine(addValue.drawingType);
-                    System.Threading.Thread.Sleep(10);
-                    Console.Clear();
-                }
-                else
-                {
-                    var errorFile = item;
-                    File.AppendAllText(@"c:\temp\CompareLog.txt", "The Following File Is Missing ID Due to Improper Nameing " + errorFile + Environment.NewLine);
-                    counter++;
-                } 
-            
-            }
-            return returnDrawing;
-        }
-        public static string GetDestination(Drawing drawingId)
-        {
-            var destinations = new Dictionary<throwaway, string>();
-
-            destinations.Add(new throwaway("005", "441"), @"C:\Users\abshier_c\Documents\TestDest\005\441\");
-            destinations.Add(new throwaway("005", "444"), @"C:\Users\abshier_c\Documents\TestDest\005\444\");
-            destinations.Add(new throwaway("006", "441"), @"C:\Users\abshier_c\Documents\TestDest\006\441");
-            destinations.Add(new throwaway("006", "444"), @"C:\Users\abshier_c\Documents\TestDest\006\444\");
-
-            var type = drawingId.drawingType;
-            var location = drawingId.drawingLocation;
-
-            var founditem = destinations.FirstOrDefault(x => x.Key.type == type && x.Key.location == location);
-
-            return founditem.Value;
-        }
-
-         public class throwaway
-         {
-             public throwaway(string location, string type)
-             {
-                 this.location = location;
-                 this.type =type;
-             }
-             public string location{get; set;}
-             public string type{get; set;}
-
-         }
-        
     }
-    
 }
 
