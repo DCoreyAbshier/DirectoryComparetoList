@@ -2,3 +2,4 @@ testme.txt
 app.config
 *.ide
 *.sqlite
+.vs/DrawingConsolidationProject/v15/.suo
