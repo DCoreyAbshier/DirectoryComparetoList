@@ -1,2 +1,8 @@
 testme.txt
 app.config
+*.ide
+*.sqlite
+.vs*
+.vscode*
+bin*
+obj*
