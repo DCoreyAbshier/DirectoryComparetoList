@@ -78,8 +78,8 @@ namespace DrawingConsolidationProject
                 else
                 {
                     var errorFile = item.Split(@"\").Last();
-                    var exceptiondestination = Path.Combine(@"C:\Users\abshier_c\Documents\TestDest\Exception\" + errorFile);
-                    File.AppendAllText(@"C:\Users\abshier_c\Documents\TestDest\Exception\CompareErrors.txt", "The Following File Is Missing ID Due to Improper Nameing " + errorFile + Environment.NewLine);
+                    var exceptiondestination = Path.Combine(@"\\sscowbfs03\cadd\Rendition\Exception\" + errorFile);
+                    File.AppendAllText(@"\\sscowbfs03\cadd\Rendition\Exception\CompareErrors.txt", "The Following File Is Missing ID Due to Improper Nameing " + errorFile + Environment.NewLine);
                     File.Copy(item, exceptiondestination, false);
                     counter++;
                 }
@@ -147,7 +147,7 @@ namespace DrawingConsolidationProject
                 else
                 {
                     var errorFile = item;
-                    File.AppendAllText(@"C:\Users\abshier_c\Documents\TestDest\Exception\CompareErrors.txt", "The Following File Is Missing ID Due to Improper Nameing " + errorFile + Environment.NewLine);
+                    File.AppendAllText(@"\\sscowbfs03\cadd\Rendition\Exception\CompareErrors.txt", "The Following File Is Missing ID Due to Improper Nameing " + errorFile + Environment.NewLine);
                     counter++;
                 }
 
