@@ -3,6 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Runtime.InteropServices;
 
 namespace DrawingConsolidationProject
 {
@@ -17,6 +18,7 @@ namespace DrawingConsolidationProject
             Console.Clear();
             Console.WriteLine("Welcome please type a command below and press enter to begin.");
             Console.WriteLine("compare or move or exit");
+            ConsoleSettings.EnableQuickEditMode();
             var input = Console.ReadLine();
             Enum.TryParse(input, out command usercommand);                                             
             
@@ -49,6 +51,7 @@ namespace DrawingConsolidationProject
         {
             Console.Clear();
             Console.WriteLine("Input directory path for file that need to be moved");
+            Creator.CreateDirectory();
             var pathToScannedDrawing = Console.ReadLine();
             var pendingScannedDrawings = GetDrawingList.FromDirectory(pathToScannedDrawing);
             var startTime = DateTime.Now.ToString("MM-dd-yyyy hh:mm:ss tt");
