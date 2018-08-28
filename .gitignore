@@ -6,3 +6,4 @@ app.config
 .vscode*
 bin*
 obj*
+Properties*
