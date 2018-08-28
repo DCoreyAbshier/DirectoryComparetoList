@@ -1,2 +1,4 @@
 testme.txt
 app.config
+*.ide
+*.sqlite
