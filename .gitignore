@@ -7,3 +7,5 @@ app.config
 bin*
 obj*
 Properties*
+*.lock
+*.ide-shm
