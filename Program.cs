@@ -59,7 +59,7 @@ namespace DrawingConsolidationProject
 
             foreach(var drawing in pendingScannedDrawings)
             {
-                var exceptiondestination = Path.Combine(@"\\sscowbfs03\cadd\Rendition\Exception\" + drawing.drawingName);
+                var exceptiondestination = Path.Combine(@"\\sscowbfs03\public\toms\cadd\Rendition\Exception\" + drawing.drawingName);
                 var directory = " ";
 
                 if (drawing.drawingLocation=="005")
@@ -74,7 +74,7 @@ namespace DrawingConsolidationProject
                 if (directory == null)
                 {
                     var errorFile = drawing.drawingName;
-                    File.AppendAllText(@"\\sscowbfs03\cadd\Rendition\Exception\MoveLog.txt", "The Following File Is Has no Destination: " + errorFile + Environment.NewLine);
+                    File.AppendAllText(@"\\sscowbfs03\public\toms\cadd\Rendition\Exception\MoveLog.txt", "The Following File Is Has no Destination: " + errorFile + Environment.NewLine);
                     File.Copy(drawing.drawingPath, exceptiondestination, false);
                 }
                 else
@@ -97,12 +97,12 @@ namespace DrawingConsolidationProject
             {
                 File.Copy(drawing.drawingPath, destination, false);
                 var moveResults = drawing.drawingName + " moved successfully ";
-                File.AppendAllText(@"\\sscowbfs03\cadd\Rendition\Exception\MoveLog.txt",
+                File.AppendAllText(@"\\sscowbfs03\public\toms\cadd\Rendition\Exception\MoveLog.txt",
                     moveResults + Environment.NewLine);
             }
             catch (IOException copyError)
             {
-                File.AppendAllText(@"\\sscowbfs03\cadd\Rendition\Exception\MoveLog.txt",
+                File.AppendAllText(@"\\sscowbfs03\public\toms\cadd\Rendition\Exception\MoveLog.txt",
                     copyError.Message + Environment.NewLine);
                 File.Copy(drawing.drawingPath, exceptiondestination, false);
             }

@@ -6,7 +6,7 @@ class Creator
     public static void CreateDirectory() 
     {
         // Specify the directory you want to manipulate.
-        string path = @"\\sscowbfs03\cadd\Rendition\Exception\";
+        string path = @"\\sscowbfs03\public\toms\cadd\Rendition\Exception\";
 
         try 
         {
