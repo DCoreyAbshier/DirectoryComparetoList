@@ -15,7 +15,7 @@ namespace DrawingConsolidationProject
             Console.Clear();
             Console.WriteLine("Finding Directories");
             var returnDrawing = new List<Drawing>();
-            var path = Directory.GetFiles(directoryPath, "*.??f", SearchOption.AllDirectories);
+            var path = Directory.GetFiles(directoryPath, "*.?if", SearchOption.AllDirectories);
             Console.Clear();
             var counter = 0;
             Regex drawingIDStandard = new Regex(@"\d{1,3}-\d{1,3}-[A-Ea-e]-\d{1,4}");
